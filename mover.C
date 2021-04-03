@@ -19,11 +19,11 @@
 */
 static bool checkArgs(int argc, char * argv[], int numP, int myId, int & rows, int & cols);
 static void printUsage(int numP);
-static void initData(int * & data, int rows, int cols);
+static int * initData(int rows, int cols);
 
 int main (int argc, char *argv[])
 {
-    int * data;
+    int * data = NULL;
     int rows, cols;
 
     //Initialize MPI
@@ -41,10 +41,9 @@ int main (int argc, char *argv[])
     if (good)
     {
         //Only process 0 initializes the data array
-        if (!myId) initData(data, rows, cols);
+        if (!myId) data = initData(rows, cols);
 
         //Call the distribution and collect functions 
-        MPI::COMM_WORLD.Barrier();
         if (!myId) std::cout << "\nTesting distribution of rows using Send and Recv.\n";
         distributeRowsSendRecv(data, rows, cols, myId, numP);
 
@@ -83,6 +82,8 @@ int main (int argc, char *argv[])
         MPI::COMM_WORLD.Barrier();
         if (!myId) std::cout << "\nTesting gather of structs using Gather.\n";
         gatherStructs(myId, numP);
+
+        if (!myId) delete[] data;
     }
 
     //Terminate MPI
@@ -92,12 +93,13 @@ int main (int argc, char *argv[])
 
 //Initializes data to be an int array of size rows * cols where
 //data[i] is set to i.
-void initData(int *& data, int rows, int cols)
+int * initData(int rows, int cols)
 {
-    data = new int[rows * cols];
+    int * data = new int[rows * cols];
     int i, j;
     for (i = 0; i < rows; i++)
         for (j = 0; j < cols; j++) data[i * cols + j] = i * cols + j;
+    return data;
 }
 
 //Checks the command line arguments. Process 0 prints usage information if
@@ -121,6 +123,11 @@ bool checkArgs(int argc, char * argv[], int numP, int myId, int & rows, int & co
         if (!myId) printUsage(numP);
         return false;
     }
+    if (numP <= 1)
+    {
+        if (!myId) printUsage(numP);
+        return false;
+    }
     return true;
 }
 
@@ -135,4 +142,5 @@ void printUsage(int numP)
 	      << numP << std::endl;
     std::cout << "\t<c> must be a multiple of the number of processes: "
 	      << numP << std::endl;
+    std::cout << "The number of processes must be greater than one.\n";
 }
