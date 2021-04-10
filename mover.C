@@ -134,7 +134,7 @@ bool checkArgs(int argc, char * argv[], int numP, int myId, int & rows, int & co
 //prints usage information
 void printUsage(int numP)
 {
-    std::cout << "usage: mover <r> <c>\n";
+    std::cout << "usage: ./mover <r> <c>\n";
     std::cout << "\tCreates an array of size <r> by <c> \n";
     std::cout << "\twhere <r> is the number of rows and <c> ";
     std::cout << "is the number of columns\n";
