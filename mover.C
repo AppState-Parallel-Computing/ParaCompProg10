@@ -59,18 +59,7 @@ int main (int argc, char *argv[])
         if (!myId) std::cout << "\nTesting distribution of columns using Send and Recv.\n";
         distributeColsSendRecv(data, rows, cols, myId, numP);
 
-        MPI::COMM_WORLD.Barrier();
-        if (!myId) std::cout << "\nTesting distribution of columns using Scatter.\n";
-        distributeColsScatter(data, rows, cols, myId, numP);
-
-        MPI::COMM_WORLD.Barrier();
-        if (!myId) std::cout << "\nTesting distribution of blocks using Send and Recv.\n";
-        distributeBlocksSendRecv(data, rows, cols, myId, numP);
-
-        MPI::COMM_WORLD.Barrier();
-        if (!myId) std::cout << "\nTesting distribution of rows cyclically using Send and Recv.\n";
-        distributeRowsCyclicSendRecv(data, rows, cols, myId, numP);
-
+        //Testing gather operations
         MPI::COMM_WORLD.Barrier();
         if (!myId) std::cout << "\nTesting gather of rows using Gather.\n";
         gatherRows(rows, cols, myId, numP);
@@ -134,13 +123,11 @@ bool checkArgs(int argc, char * argv[], int numP, int myId, int & rows, int & co
 //prints usage information
 void printUsage(int numP)
 {
-    std::cout << "usage: ./mover <r> <c>\n";
-    std::cout << "\tCreates an array of size <r> by <c> \n";
-    std::cout << "\twhere <r> is the number of rows and <c> ";
-    std::cout << "is the number of columns\n";
-    std::cout << "\t<r> must be a multiple of the number of processes: "
-	      << numP << std::endl;
-    std::cout << "\t<c> must be a multiple of the number of processes: "
-	      << numP << std::endl;
-    std::cout << "The number of processes must be greater than one.\n";
+    std::cout << "usage: mpirun -np <p> ./mover <r> <c>\n";
+    std::cout << "\tCreates an array of size <r> by <c>";
+    std::cout << " where <r> is the number\n";
+    std::cout << "\tof rows and <c> is the number of columns.\n";
+    std::cout << "\t<p> (> 1) is the number of processes to create.\n";
+    std::cout << "\t<r> must be a multiple of the number of processes.\n";
+    std::cout << "\t<c> must be a multiple of the number of processes.\n";
 }

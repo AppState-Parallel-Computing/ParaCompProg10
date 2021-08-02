@@ -14,17 +14,26 @@
 //destination array will be equal to its index: dest[i] = i
 void gatherRows(int rows, int cols, int myId, int numP)
 {
-    int * dest = NULL;
-    //Process 0 needs to create an array that is big enough to hold
-    //all rows
+    int * dest = NULL;  //Used by process 0
+    int * src = NULL;   //Used by all processes
 
+    //TO DO:
+    //Process 0 needs to create a dest array that is big enough to hold
+    //all rows. All of the other processes will need to create a src array
+    //that is rows/numP rows. (You need to figure out the number of ints and
+    //allocate arrays of ints.)
+    //All processes will need to initialize their src array.
+    //All processes will need to execute a Gather so the src array values
+    //end up on process 0.
 
-    //process 0 checks to see if the gather worked
+    //Process 0 checks to see if the gather worked
     if (!myId)
     {
         std::cout << "Checking to see if Gather of rows succeeded\n";
         checkGatherRows(dest, rows, cols, myId);
     }
+
+    //TO DO: delete dynamically allocated data
 }
 
 //Each process that calls this function, creates an array of
@@ -36,8 +45,14 @@ void gatherRows(int rows, int cols, int myId, int numP)
 //destination array will be equal to its index: dest[i] = i
 void allGatherRows(int rows, int cols, int myId, int numP)
 {
-    int * dest = NULL;
+    int * dest = NULL;  //Used by all processes
+    int * src = NULL;   //Used by all processes
 
+    //TO DO:
+    //All processes will need to create a dest array to hold all rows.
+    //All processes will need to create a src array to hold rows/numP rows.
+    //All processes will initialize their src array.
+    //All processes will execute an AllGather
 
     //here's the check
     if (!myId)
@@ -46,6 +61,8 @@ void allGatherRows(int rows, int cols, int myId, int numP)
     }
     //every process should have received an identical array
     checkAllGatherRows(dest, rows, cols, myId);
+
+    //TO DO: delete dynamically allocated data
 }
 
 //This function will call Gather so that process 0 will collect the structs
@@ -66,11 +83,12 @@ void gatherStructs(int myId, int numP)
     for (i = 0; i < 12; i++) sendThis.sletters[i] = letters[i];
     sendThis.rank = myId;
 
-    //Create an MPI Datatype
-
-    //Process 0 needs to destination array that is large enough to hold all structs
-    //from all processes
-
+    //TO DO:
+    //Process 0 needs to create a dest array that is large enough to hold all structs
+    //from all processes. Note that the size of the struct is 16 bytes.
+    //All processes need to use Create_struct to create an MPI data type.  See
+    //example on page 343 (Listing 9.16; explained in slides).
+    //All processes need to call Gather.
 
     //All of the struct values need to be at process 0
     if (!myId)
@@ -78,5 +96,7 @@ void gatherStructs(int myId, int numP)
         std::cout << "Checking to see if Gather of structs succeeded\n";
         checkGatherStructs(dest, myId, numP);
     }
+
+    //TO DO: delete dynamically allocated data 
 }
 
