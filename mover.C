@@ -43,6 +43,10 @@ int main (int argc, char *argv[])
         //Only process 0 initializes the data array
         if (!myId) data = initData(rows, cols);
 
+        //int wait = 1;
+        //while (wait && myId == 0);
+
+
         //Call the distribution and collect functions 
         if (!myId) std::cout << "\nTesting distribution of rows using Send and Recv.\n";
         distributeRowsSendRecv(data, rows, cols, myId, numP);
@@ -59,7 +63,6 @@ int main (int argc, char *argv[])
         if (!myId) std::cout << "\nTesting distribution of columns using Send and Recv.\n";
         distributeColsSendRecv(data, rows, cols, myId, numP);
 
-        //Testing gather operations
         MPI::COMM_WORLD.Barrier();
         if (!myId) std::cout << "\nTesting gather of rows using Gather.\n";
         gatherRows(rows, cols, myId, numP);
@@ -85,6 +88,11 @@ int main (int argc, char *argv[])
 int * initData(int rows, int cols)
 {
     int * data = new int[rows * cols];
+    if (data == NULL)
+    {
+       printf("new failed in initData\n");
+       exit(0);
+    }
     int i, j;
     for (i = 0; i < rows; i++)
         for (j = 0; j < cols; j++) data[i * cols + j] = i * cols + j;
@@ -116,6 +124,16 @@ bool checkArgs(int argc, char * argv[], int numP, int myId, int & rows, int & co
     {
         if (!myId) printUsage(numP);
         return false;
+    }
+    long size = (long) rows * (long) cols * 4;
+    if (size > ((long) 1 << 31) - 1)
+    {
+       if (!myId)
+       {
+          printf("Size of data array is too large. Use smaller parameters.\n");
+          printUsage(numP);
+       }
+       return false;
     }
     return true;
 }
