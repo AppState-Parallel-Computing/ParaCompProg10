@@ -9,9 +9,8 @@
 #define RED     "\033[31m"      /* Red */
 
 //This function uses Send and Recv to distribute the rows of the data array
-//in a blocked way using numP - 1 Sends.  Thus process 1 gets rows numP ... 2*numP - 1, 
-//process 2 gets rows 2*numP ... 3*numP - 1, process 3 gets rows 3*numP .. 4*numP - 1,
-//etc.
+//in a blocked way using numP - 1 Sends.  
+//data contains rows * cols ints. Each process receives rows/numP consecutive rows.
 void distributeRowsSendRecv(int * data, int rows, int cols, int myId, int numP)
 {
     int * dest = NULL;
@@ -33,9 +32,8 @@ void distributeRowsSendRecv(int * data, int rows, int cols, int myId, int numP)
 }
 
 //This function uses Isend and Irecv to distribute the rows of the data array
-//in a blocked way using numP - 1 Isends.  Thus process 1 gets rows numP ... 2*numP - 1, 
-//process 2 gets rows 2*numP ... 3*numP - 1, process 3 gets rows 3*numP .. 4*numP - 1
-//etc.
+//in a blocked way using numP - 1 Isends.  
+//data contains rows * cols ints. Each process receives rows/numP rows.
 void distributeRowsIsendIrecv(int * data, int rows, int cols, int myId, int numP)
 {
     int * dest = NULL;
@@ -58,9 +56,8 @@ void distributeRowsIsendIrecv(int * data, int rows, int cols, int myId, int numP
 }
 
 //This function uses Scatter to distribute the rows of the data array
-//in a blocked way.  Thus process 1 gets rows numP ... 2*numP - 1, process 2 
-//gets rows 2*numP ... 3*numP - 1, process 3 gets rows 3*numP .. 4*numP - 1
-//etc.
+//in a blocked way.  
+//data contains rows * cols ints. Each process receives rows/numP rows.
 void distributeRowsScatter(int * data, int rows, int cols, int myId, int numP)
 {
     int * dest = NULL;
@@ -81,9 +78,8 @@ void distributeRowsScatter(int * data, int rows, int cols, int myId, int numP)
 }
 
 //This function uses Send and Recv to distribute the cols of the data array
-//in a blocked way using numP - 1 Sends.  Thus process 1 gets columns numP ... 2*numP - 1,
-//process 2 gets columns 2*numP ... 3*numP - 1, process 3 gets columns 3*numP .. 4*numP - 1
-//etc.
+//in a blocked way using numP - 1 Sends.  
+//data contains rows * cols. Each process gets cols/numP columns.
 //
 //HINT: create a new MPI Datatype
 void distributeColsSendRecv(int * data, int rows, int cols, int myId, int numP)
